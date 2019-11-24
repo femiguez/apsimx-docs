@@ -453,12 +453,27 @@ pp &lt;-<span class="st"> </span><span class="kw">inspect_apsim</span>(<span cla
 ## Created  ./Millet-pp.apsim</code></pre>
 <p>Verify that it was edited correctly.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">inspect_apsim</span>(<span class="st">&quot;Millet-pp.apsim&quot;</span>, <span class="dt">src.dir =</span> <span class="st">&quot;.&quot;</span>,
-              <span class="dt">node =</span> <span class="st">&quot;Manager&quot;</span>)</code></pre></div>
+              <span class="dt">node =</span> <span class="st">&quot;Manager&quot;</span>,
+              <span class="dt">parm =</span> <span class="kw">list</span>(<span class="st">&quot;Sow on a fixed date&quot;</span>,<span class="ot">NA</span>))</code></pre></div>
 <pre><code>## Crop Type:  millet 
 ## Management Scripts:
 ## Sow on a fixed date
 ## Harvesting rule
-## Tiller Aggregation</code></pre>
+## Tiller Aggregation
+## 
+## 
+## Selected manager:  Sow on a fixed date 
+## 
+## 
+## parm                                  value   
+## ------------------------------------  --------
+## Sowing criteria                               
+## Enter sowing date (dd-mmm) :          1-dec   
+## Sowing parameters                             
+## Enter name of crop to sow :           millet  
+## Enter sowing density  (plants/m2) :   8       
+## Enter sowing depth  (mm) :            30      
+## Enter cultivar :                      wrajpop</code></pre>
 </div>
 </div>
 <div id="advanced-examples" class="section level1">
