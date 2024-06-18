@@ -12,92 +12,107 @@
 
 <meta name="author" content="Fernando Miguez" />
 
-<meta name="date" content="2021-08-03" />
+<meta name="date" content="2024-06-18" />
 
 <title>Sensitivity Analysis</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {  }
+{ }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -106,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -318,40 +340,72 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Sensitivity Analysis</h1>
 <h4 class="author">Fernando Miguez</h4>
-<h4 class="date">2021-08-03</h4>
+<h4 class="date">2024-06-18</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">Introduction</a><ul>
-<li><a href="#uncertainty-analysis-using-for-loops">Uncertainty Analysis using for loops</a></li>
-<li><a href="#sens_apsimx">sens_apsimx</a></li>
-<li><a href="#example-using-sens_apsimx">Example using sens_apsimx</a></li>
-<li><a href="#creating-grids">Creating grids</a><ul>
-<li><a href="#first-option-parametersets">First option: parameterSets</a></li>
+<li><a href="#introduction" id="toc-introduction">Introduction</a>
+<ul>
+<li><a href="#uncertainty-analysis-using-for-loops" id="toc-uncertainty-analysis-using-for-loops">Uncertainty Analysis using
+for loops</a></li>
+<li><a href="#sens_apsimx" id="toc-sens_apsimx">sens_apsimx</a></li>
+<li><a href="#example-using-sens_apsimx" id="toc-example-using-sens_apsimx">Example using sens_apsimx</a></li>
+<li><a href="#creating-grids" id="toc-creating-grids">Creating grids</a>
+<ul>
+<li><a href="#first-option-parametersets" id="toc-first-option-parametersets">First option: parameterSets</a></li>
 </ul></li>
-<li><a href="#second-option-morris">Second option: Morris</a></li>
+<li><a href="#second-option-morris" id="toc-second-option-morris">Second
+option: Morris</a></li>
 </ul></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Sensitivity analysis of crop models such as APSIM is a valuable task which allows us to develop an intuition of the model response to changing a variety of inputs. These inputs can generally be included in the following categories:</p>
+<p>Sensitivity analysis of crop models such as APSIM is a valuable task
+which allows us to develop an intuition of the model response to
+changing a variety of inputs. These inputs can generally be included in
+the following categories:</p>
 <ul>
 <li>weather</li>
 <li>soil profiles</li>
 <li>crop/genetics</li>
 <li>management</li>
 </ul>
-<p>The weather component can depend on different sources of data or manipulations to simulate different conditions and stresses. The soil profiles can be from different locations or specifically manipulated to understand the impact of particular soil properties. Crop properties or cultivar specific parameters can also be investigated as a source of model behavior. Finally, examples of management usually include planting date, fertilizer application, tillage or residue management and irrigation. All of these components can be sources of uncertainty and can be evaluated in a sensitivity analysis.</p>
-<p>When multiple parameters are evaluated performing model runs for all combinations can become prohibitive. For this reason, there are some combinations which can be more efficient and provide nearly the same amount of information. The suggestion here is to build complexity in the sensitivity analysis task gradually. For example, first choose one parameter and select 5-10 reasonable values, run the model and evaluate the model output. This is a one parameter at a time approach and it can be of great value in developing an intuition for the model behavior.</p>
-<p>For a general introduction to sensitivity analysis see Saltelli et al. 2008. Global sensitivity analysis. The Primer. Here they define sensitivity analysis as:</p>
-<p><em>The study of how uncertainty in the output of a model (numerical or otherwise) can be apportioned to different sources of uncertainty in the model input</em></p>
-<p>A preliminary step in sensitivity analysis often involves uncertainty analysis and, as an example, it can involve computing the output from a model based on various samples from the relevant inputs. Usually, this involves identifying parameters, choosing appropriate distributions which we sample from and creating candidate values which are then used in the model.</p>
+<p>The weather component can depend on different sources of data or
+manipulations to simulate different conditions and stresses. The soil
+profiles can be from different locations or specifically manipulated to
+understand the impact of particular soil properties. Crop properties or
+cultivar specific parameters can also be investigated as a source of
+model behavior. Finally, examples of management usually include planting
+date, fertilizer application, tillage or residue management and
+irrigation. All of these components can be sources of uncertainty and
+can be evaluated in a sensitivity analysis.</p>
+<p>When multiple parameters are evaluated performing model runs for all
+combinations can become prohibitive. For this reason, there are some
+combinations which can be more efficient and provide nearly the same
+amount of information. The suggestion here is to build complexity in the
+sensitivity analysis task gradually. For example, first choose one
+parameter and select 5-10 reasonable values, run the model and evaluate
+the model output. This is a one parameter at a time approach and it can
+be of great value in developing an intuition for the model behavior.</p>
+<p>For a general introduction to sensitivity analysis see Saltelli et
+al. 2008. Global sensitivity analysis. The Primer.</p>
+<p>Here they define sensitivity analysis as:</p>
+<p><em>The study of how uncertainty in the output of a model (numerical
+or otherwise) can be apportioned to different sources of uncertainty in
+the model input</em></p>
+<p>A preliminary step in sensitivity analysis often involves uncertainty
+analysis and, as an example, it can involve computing the output from a
+model based on various samples from the relevant inputs. Usually, this
+involves identifying parameters, choosing appropriate distributions
+which we sample from and creating candidate values which are then used
+in the model.</p>
 <div id="uncertainty-analysis-using-for-loops" class="section level2">
 <h2>Uncertainty Analysis using for loops</h2>
-<p>The steps needed to perform a uncertainty analysis can involve simple use of <strong>for</strong> loops.</p>
+<p>The steps needed to perform a uncertainty analysis can involve simple
+use of <strong>for</strong> loops.</p>
 <ol style="list-style-type: decimal">
 <li>Identify a parameter of interest</li>
 <li>Sample (or select) a new value for the parameter of interest</li>
@@ -360,42 +414,63 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>Collect the results and repeat as needed</li>
 </ol>
 <p>A simple example</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## Create a temporary directory and copy the Wheat.apsimx file</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">tmp.dir &lt;-<span class="st"> </span><span class="kw">tempdir</span>()</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">extd.dir &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;apsimx&quot;</span>)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">file.copy</span>(<span class="kw">file.path</span>(extd.dir, <span class="st">&quot;Wheat.apsimx&quot;</span>), tmp.dir)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">## Identify a parameter of interest</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">## In this case we want to know the impact of varying the fertilizer amount</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">pp &lt;-<span class="st"> </span><span class="kw">inspect_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir, </a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">                      <span class="dt">node =</span> <span class="st">&quot;Manager&quot;</span>, <span class="dt">parm =</span> <span class="kw">list</span>(<span class="st">&quot;SowingFertiliser&quot;</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">## For simplicity, we create a vector of fertilizer amounts (instead of sampling)</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">ferts &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">5</span>, <span class="dv">200</span>, <span class="dt">length.out =</span> <span class="dv">7</span>)</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">col.res &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(ferts)){</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">  </a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">  <span class="kw">edit_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir,</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">              <span class="dt">node =</span> <span class="st">&quot;Other&quot;</span>,</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">              <span class="dt">parm.path =</span> pp, <span class="dt">parm =</span> <span class="st">&quot;Amount&quot;</span>,</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">              <span class="dt">value =</span> ferts[i])</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">  </a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">  sim &lt;-<span class="st"> </span><span class="kw">apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir)</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">  col.res &lt;-<span class="st"> </span><span class="kw">rbind</span>(col.res, <span class="kw">data.frame</span>(<span class="dt">fertilizer.amount =</span> ferts[i], </a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">                                       <span class="dt">wheat.aboveground.wt =</span> <span class="kw">mean</span>(sim<span class="op">$</span>Wheat.AboveGround.Wt, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22">}</a></code></pre></div>
-<p>The code here is shown for illustration so that the basic strategy can be replicated. The results collected in object <em>col.res</em> can be further processed to better understand the impact of the chosen parameter (input) on the output.</p>
-<p>There is a function in the package which simplifies this task.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="do">## Create a temporary directory and copy the Wheat.apsimx file</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>tmp.dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>extd.dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;apsimx&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="fu">file.path</span>(extd.dir, <span class="st">&quot;Wheat.apsimx&quot;</span>), tmp.dir)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="do">## Identify a parameter of interest</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="do">## In this case we want to know the impact of varying the fertilizer amount</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>pp <span class="ot">&lt;-</span> <span class="fu">inspect_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir, </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>                      <span class="at">node =</span> <span class="st">&quot;Manager&quot;</span>, <span class="at">parm =</span> <span class="fu">list</span>(<span class="st">&quot;SowingFertiliser&quot;</span>, <span class="dv">1</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="do">## For simplicity, we create a vector of fertilizer amounts (instead of sampling)</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>ferts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">5</span>, <span class="dv">200</span>, <span class="at">length.out =</span> <span class="dv">7</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>col.res <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(ferts)){</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  </span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="fu">edit_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir,</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>              <span class="at">node =</span> <span class="st">&quot;Other&quot;</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>              <span class="at">parm.path =</span> pp, <span class="at">parm =</span> <span class="st">&quot;Amount&quot;</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>              <span class="at">value =</span> ferts[i])</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>  </span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  sim <span class="ot">&lt;-</span> <span class="fu">apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  col.res <span class="ot">&lt;-</span> <span class="fu">rbind</span>(col.res, <span class="fu">data.frame</span>(<span class="at">fertilizer.amount =</span> ferts[i], </span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>                                       <span class="at">wheat.aboveground.wt =</span> <span class="fu">mean</span>(sim<span class="sc">$</span>Wheat.AboveGround.Wt, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>}</span></code></pre></div>
+<p>sensitivity-apsim.R</p>
+<p>The code here is shown for illustration so that the basic strategy
+can be replicated. The results collected in object <em>col.res</em> can
+be further processed to better understand the impact of the chosen
+parameter (input) on the output.</p>
+<p>There is a function in the package which simplifies this task. The
+one below is for APSIM Next Gen and there is a similar one for APSIM
+Classic.</p>
 </div>
 <div id="sens_apsimx" class="section level2">
 <h2>sens_apsimx</h2>
 <ul>
-<li>file = .apsimx file</li>
-<li>src.dir = source directory where the APSIM file is located.</li>
-<li><p>parm.paths = character vector with the full path to the parameters to be evaluated. This can be obtained by using <strong>inspect_apsimx</strong> or <strong>inspect_apsim_json</strong>. The length of the parameter vector should be equal to the number of parameters being evaluated (sometimes less is more).</p></li>
-<li><p>parm.vector.index = some paths point to a vector of parameters, but sometimes only one element of that vector needs to be evaluated. In this case provide the index for which element of the vector needs to be evaluated. If some of the parameters need this index while others do not, include a zero for those parameter vectors which are not indexed.</p></li>
-<li><p>replacement = logical indicating whether each parameter is in the replacement component or not.</p></li>
-<li><p>grid = data frame with combinations of parameters to be evaluated.</p></li>
-<li><p>summary = optional summary function to apply if the APSIM output returns multiple rows. The mean is used by default.</p></li>
-<li><p>root = indicate the root simulation in case it is not the default one.</p></li>
+<li><p>file = .apsimx file</p></li>
+<li><p>src.dir = source directory where the APSIM file is
+located.</p></li>
+<li><p>parm.paths = character vector with the full path to the
+parameters to be evaluated. This can be obtained by using
+<strong>inspect_apsimx</strong> or <strong>inspect_apsim_json</strong>.
+The length of the parameter vector should be equal to the number of
+parameters being evaluated (sometimes less is more).</p></li>
+<li><p>convert = whether to convert strings to numeric</p></li>
+<li><p>replacement = logical indicating whether each parameter is in the
+replacement component or not.</p></li>
+<li><p>grid = data frame with combinations of parameters to be
+evaluated.</p></li>
+<li><p>soil.profiles = soil profiles, which can be passed as a
+list</p></li>
+<li><p>summary = optional summary function to apply if the APSIM output
+returns multiple rows. The mean is used by default.</p></li>
+<li><p>root = indicate the root simulation in case it is not the default
+one.</p></li>
+<li><p>verbose = printing progress and other details</p></li>
+<li><p>cores = number of cores to use. The package ‘future’ is currently
+used.</p></li>
+<li><p>save = whether to save intermediate (and final) results.</p></li>
 <li><p>… = additional arguments (none used at the moment).</p></li>
 </ul>
 </div>
@@ -407,43 +482,52 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>Identify parameters of interest (using inspect_apsimx)</li>
 <li>Create a simple grid for evaluating the model</li>
 </ol>
-<p>Here the grid is created using <em>expand.grid</em> and it has 9 rows. This means that this while require 9 simulation runs of the APSIM model. This takes a couple of minutes to run. The resulting object is of class <em>sens_apsim</em> and it can be investigated using the <em>summary</em> function (for now).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">tmp.dir &lt;-<span class="st"> </span><span class="kw">tempdir</span>()</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">extd.dir &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;apsimx&quot;</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">file.copy</span>(<span class="kw">file.path</span>(extd.dir, <span class="st">&quot;Wheat.apsimx&quot;</span>), tmp.dir)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">## Identify a parameter of interest</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">## In this case we want to know the impact of varying the fertilizer amount</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">## and the plant population</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">pp1 &lt;-<span class="st"> </span><span class="kw">inspect_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir, </a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">                      <span class="dt">node =</span> <span class="st">&quot;Manager&quot;</span>, <span class="dt">parm =</span> <span class="kw">list</span>(<span class="st">&quot;SowingFertiliser&quot;</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">pp1 &lt;-<span class="st"> </span><span class="kw">paste0</span>(pp1, <span class="st">&quot;.Amount&quot;</span>)</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">pp2 &lt;-<span class="st"> </span><span class="kw">inspect_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir, </a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">                      <span class="dt">node =</span> <span class="st">&quot;Manager&quot;</span>, <span class="dt">parm =</span> <span class="kw">list</span>(<span class="st">&quot;SowingRule1&quot;</span>, <span class="dv">9</span>))</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">pp2 &lt;-<span class="st"> </span><span class="kw">paste0</span>(pp2, <span class="st">&quot;.Population&quot;</span>)</a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">## The names in the grid should (partially) match the parameter path names</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16">grd &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">Fertiliser =</span> <span class="kw">c</span>(<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>), <span class="dt">Population =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>))</a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"> </a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">## This takes 2-3 minutes</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">sns &lt;-<span class="st"> </span><span class="kw">sens_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir,</a>
-<a class="sourceLine" id="cb2-20" data-line-number="20">                    <span class="dt">parm.paths =</span> <span class="kw">c</span>(pp1, pp2),</a>
-<a class="sourceLine" id="cb2-21" data-line-number="21">                    <span class="dt">grid =</span> grd)</a></code></pre></div>
+<p>Here the grid is created using <em>expand.grid</em> and it has 9
+rows. This means that this will require 9 simulation runs of the APSIM
+model. This takes a couple of minutes to run. The resulting object is of
+class <em>sens_apsim</em> and it can be investigated using the
+<em>summary</em> function (for now).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>tmp.dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>extd.dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;apsimx&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="fu">file.path</span>(extd.dir, <span class="st">&quot;Wheat.apsimx&quot;</span>), tmp.dir)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="do">## Identify a parameter of interest</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="do">## In this case we want to know the impact of varying the fertilizer amount</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="do">## and the plant population</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>pp1 <span class="ot">&lt;-</span> <span class="fu">inspect_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir, </span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>                      <span class="at">node =</span> <span class="st">&quot;Manager&quot;</span>, <span class="at">parm =</span> <span class="fu">list</span>(<span class="st">&quot;SowingFertiliser&quot;</span>, <span class="dv">1</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>pp1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(pp1, <span class="st">&quot;.Amount&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>pp2 <span class="ot">&lt;-</span> <span class="fu">inspect_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir, </span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>                      <span class="at">node =</span> <span class="st">&quot;Manager&quot;</span>, <span class="at">parm =</span> <span class="fu">list</span>(<span class="st">&quot;SowingRule1&quot;</span>, <span class="dv">9</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>pp2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(pp2, <span class="st">&quot;.Population&quot;</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="do">## The names in the grid should (partially) match the parameter path names</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>grd <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">Fertiliser =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>), <span class="at">Population =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>))</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a> </span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="do">## This takes 2-3 minutes</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>sns <span class="ot">&lt;-</span> <span class="fu">sens_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir,</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>                    <span class="at">parm.paths =</span> <span class="fu">c</span>(pp1, pp2),</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>                    <span class="at">grid =</span> grd)</span></code></pre></div>
+<p>sensitivity-apsim.R</p>
 </div>
 <div id="creating-grids" class="section level2">
 <h2>Creating grids</h2>
-<p>There are many ways of creating grids. The example above using function <em>expand.gird</em> returned all possible combinations of the parameter values. This might not be desirable or feasible and other methods are available. For this task, the package <strong>sensitivity</strong> is especially useful.</p>
+<p>There are many ways of creating grids. The example above using
+function <em>expand.gird</em> returned all possible combinations of the
+parameter values. This might not be desirable or feasible and other
+methods are available. For this task, the package
+<strong>sensitivity</strong> is especially useful.</p>
 <div id="first-option-parametersets" class="section level3">
 <h3>First option: parameterSets</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(sensitivity)</a></code></pre></div>
-<pre><code>## Registered S3 method overwritten by 'sensitivity':
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(sensitivity)</span></code></pre></div>
+<pre><code>## Registered S3 method overwritten by &#39;sensitivity&#39;:
 ##   method    from 
 ##   print.src dplyr</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co">## Simple example: see documentation for other options</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">X.grid &lt;-<span class="st"> </span><span class="kw">parameterSets</span>(<span class="dt">par.ranges =</span> <span class="kw">list</span>(<span class="dt">Fertiliser =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">300</span>), </a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                                          <span class="dt">Population =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">300</span>)),</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                        <span class="dt">samples =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>), <span class="dt">method =</span> <span class="st">&quot;grid&quot;</span>)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">X.grid</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## Simple example: see documentation for other options</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>X.grid <span class="ot">&lt;-</span> <span class="fu">parameterSets</span>(<span class="at">par.ranges =</span> <span class="fu">list</span>(<span class="at">Fertiliser =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">300</span>), </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                                          <span class="at">Population =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">300</span>)),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                        <span class="at">samples =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>), <span class="at">method =</span> <span class="st">&quot;grid&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>X.grid</span></code></pre></div>
 <pre><code>##       Fertiliser Population
 ##  [1,]        1.0        1.0
 ##  [2,]      150.5        1.0
@@ -454,43 +538,50 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##  [7,]        1.0      300.0
 ##  [8,]      150.5      300.0
 ##  [9,]      300.0      300.0</code></pre>
+<p>sensitivity-apsim.R</p>
 </div>
 </div>
 <div id="second-option-morris" class="section level2">
 <h2>Second option: Morris</h2>
 <p>A second option is to use the function <em>morris</em>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">X.mrrs &lt;-<span class="st"> </span><span class="kw">morris</span>(<span class="dt">factors =</span> <span class="kw">c</span>(<span class="st">&quot;Fertiliser&quot;</span>, <span class="st">&quot;Population&quot;</span>),</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">                   <span class="dt">r =</span> <span class="dv">3</span>, <span class="dt">design =</span> <span class="kw">list</span>(<span class="dt">type =</span> <span class="st">&quot;oat&quot;</span>, <span class="dt">levels =</span> <span class="dv">3</span>, <span class="dt">grid.jump =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">                   <span class="dt">binf =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">bsup =</span> <span class="kw">c</span>(<span class="dv">200</span>, <span class="dv">300</span>))</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">X.mrrs<span class="op">$</span>X</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>X.mrrs <span class="ot">&lt;-</span> <span class="fu">morris</span>(<span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;Fertiliser&quot;</span>, <span class="st">&quot;Population&quot;</span>),</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                   <span class="at">r =</span> <span class="dv">3</span>, <span class="at">design =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;oat&quot;</span>, <span class="at">levels =</span> <span class="dv">3</span>, <span class="at">grid.jump =</span> <span class="dv">1</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>                   <span class="at">binf =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="at">bsup =</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">300</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>X.mrrs<span class="sc">$</span>X</span></code></pre></div>
 <pre><code>##       Fertiliser Population
 ##  [1,]        100      152.5
 ##  [2,]          0      152.5
-##  [3,]          0        5.0
+##  [3,]          0      300.0
 ##  [4,]        100      152.5
 ##  [5,]        100        5.0
-##  [6,]          0        5.0
-##  [7,]        100      152.5
-##  [8,]        100      300.0
-##  [9,]        200      300.0</code></pre>
-<p>The sensitivity package allows for decoupling the simulation runs and the analysis of the results. For example:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">## This takes 2-3 minutes</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">sns2 &lt;-<span class="st"> </span><span class="kw">sens_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="dt">src.dir =</span> tmp.dir,</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">                     <span class="dt">parm.paths =</span> <span class="kw">c</span>(pp1, pp2),</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">                     <span class="dt">grid =</span> X.mrrs<span class="op">$</span>X)</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">## These are the sensitivity results for AboveGround.Wt only</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">sns.res.ag &lt;-<span class="st"> </span><span class="kw">tell</span>(X.mrrs, sns2<span class="op">$</span>grid.sims<span class="op">$</span>Wheat.AboveGround.Wt)</a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">sns.res.ag</a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">## Call: morris(factors = c(&quot;Fertiliser&quot;, &quot;Population&quot;), </span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">## r = 3, design = list(type = &quot;oat&quot;, levels = 3, grid.jump = 1), </span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">## binf = c(0, 5), bsup = c(200, 300))</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">## </span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">## Model runs: 9 </span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">##                 mu  mu.star    sigma</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">## Fertiliser 916.6674 916.6674 662.8798</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">## Population 448.4530 448.4530 640.6807</span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="kw">plot</span>(sns.res.ag)</a></code></pre></div>
-<p>I’m not running the code in this vignette to save time, but hopefully this is sufficient information to illustrate performing sensitivity analysis using package <strong>apsimx</strong> and <strong>sensitivity</strong>.</p>
+##  [6,]        200        5.0
+##  [7,]        100        5.0
+##  [8,]          0        5.0
+##  [9,]          0      152.5</code></pre>
+<p>sensitivity-apsim.R</p>
+<p>The sensitivity package allows for decoupling the simulation runs and
+the analysis of the results. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## This takes 2-3 minutes</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>sns2 <span class="ot">&lt;-</span> <span class="fu">sens_apsimx</span>(<span class="st">&quot;Wheat.apsimx&quot;</span>, <span class="at">src.dir =</span> tmp.dir,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                     <span class="at">parm.paths =</span> <span class="fu">c</span>(pp1, pp2),</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>                     <span class="at">grid =</span> X.mrrs<span class="sc">$</span>X)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="do">## These are the sensitivity results for AboveGround.Wt only</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>sns.res.ag <span class="ot">&lt;-</span> <span class="fu">tell</span>(X.mrrs, sns2<span class="sc">$</span>grid.sims<span class="sc">$</span>Wheat.AboveGround.Wt)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>sns.res.ag</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="do">## Call: morris(factors = c(&quot;Fertiliser&quot;, &quot;Population&quot;), </span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="do">## r = 3, design = list(type = &quot;oat&quot;, levels = 3, grid.jump = 1), </span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="do">## binf = c(0, 5), bsup = c(200, 300))</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="do">## Model runs: 9 </span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="do">##                 mu  mu.star    sigma</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="do">## Fertiliser 916.6674 916.6674 662.8798</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="do">## Population 448.4530 448.4530 640.6807</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="fu">plot</span>(sns.res.ag)</span></code></pre></div>
+<p>sensitivity-apsim.R</p>
+<p>I’m not running the code in this vignette to save time, but hopefully
+this is sufficient information to illustrate performing sensitivity
+analysis using package <strong>apsimx</strong> and
+<strong>sensitivity</strong>.</p>
 </div>
 </div>
 
